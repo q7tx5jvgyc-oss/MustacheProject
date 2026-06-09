@@ -1,22 +1,24 @@
-name: Build Mustache
-
+name: Build Ultra Tweak
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Compile Mustache dylib
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Theos
+        run: bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+      - name: Build
         run: |
-          xcrun -sdk iphoneos clang -dynamiclib -arch arm64 -framework UIKit -framework Foundation -o Mustache.dylib Mustache.m
-          
-      - name: Upload Mustache Artifact
-        uses: actions/upload-artifact@v4
+          export THEOS=~/theos
+          mkdir -p $THEOS/sdks
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C $THEOS/sdks
+          make clean package FINALPACKAGE=1
+      - name: Upload
+        uses: actions/upload-artifact@v3
         with:
-          name: Mustache-Dylib
-          path: Mustache.dylib
+          name: UltraAutoClicker-Build
+          path: packages/*.deb
