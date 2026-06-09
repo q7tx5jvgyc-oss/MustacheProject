@@ -1,0 +1,22 @@
+name: Build Mustache Clicker
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compile Mustache dylib
+        run: |
+          xcrun -sdk iphoneos clang -dynamiclib -arch arm64 -framework UIKit -framework Foundation -framework CoreGraphics -o Mustache.dylib Mustache.m
+
+      - name: Upload Mustache Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mustache-AutoClicker
+          path: Mustache.dylib
