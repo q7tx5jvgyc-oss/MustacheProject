@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Yalla Clicker">
+    <title>Yalla Ludo Auto Clicker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #0099ff, #00d4ff);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00d4ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00d4ff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .speed-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #00d4ff;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0099ff, #00d4ff);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 153, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0, 153, 255, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444, #ff0000);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-danger:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 68, 68, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00cc00, #00ff00);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 204, 0, 0.3);
+        }
+
+        .btn-success:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0, 204, 0, 0.5);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9900, #ffaa00);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+        }
+
+        .btn-warning:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 153, 0, 0.5);
+        }
+
+        .btn-full {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        .target-list {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .target-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .target-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .target-coords {
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        .target-remove {
+            background: rgba(255, 68, 68, 0.2);
+            border: none;
+            color: #ff4444;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .status-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #888;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: #00ff00;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input[type="number"]::placeholder {
+            color: #666;
+        }
+
+        .info-box {
+            background: rgba(0, 153, 255, 0.1);
+            border-left: 3px solid #0099ff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #00d4ff;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        @media (max-height: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎮 Yalla Clicker</h1>
+            <p>Auto Clicker for Yalla Ludo</p>
+        </div>
+
+        <!-- Status Card -->
+        <div class="card">
+            <div class="status-box">
+                <div class="status-label">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    الحالة
+                </div>
+                <div class="status-value" id="statusText">متوقف</div>
+            </div>
+            <div class="status-box">
+                <div class="status-label">عدد النقرات</div>
+                <div class="status-value" id="clickCount">0</div>
+            </div>
+        </div>
+
+        <!-- Speed Control Card -->
+        <div class="card">
+            <div class="section-title">⚡ التحكم بالسرعة</div>
+            <div class="control-group">
+                <label class="label">سرعة النقرات (بالثواني)</label>
+                <div class="slider-container">
+                    <input type="range" id="speedSlider" min="0.01" max="1" step="0.01" value="0.1">
+                    <span class="speed-value" id="speedValue">0.10s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Management Card -->
+        <div class="card">
+            <div class="section-title">🎯 إدارة الأهداف</div>
+            
+            <div class="info-box">
+                💡 اضغط على الشاشة لإضافة موضع النقرة الحالي
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="xInput" placeholder="X" min="0" max="1000">
+                <input type="number" id="yInput" placeholder="Y" min="0" max="1000">
+                <button class="btn btn-success" onclick="addTarget()" style="flex: 0.5;">إضافة</button>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-warning" onclick="loadPresets()">🎮 إعدادات Yalla</button>
+                <button class="btn btn-danger" onclick="clearAllTargets()">🗑️ مسح الكل</button>
+            </div>
+
+            <div class="target-list" id="targetList">
+                <div style="text-align: center; color: #666; padding: 20px; font-size: 12px;">
+                    لا توجد أهداف حتى الآن
+                </div>
+            </div>
+        </div>
+
+        <!-- Preset Positions -->
+        <div class="card">
+            <div class="section-title">📍 مواضع Yalla Ludo</div>
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="addTargetDirect(160, 400)">🎲 Dice</button>
+                <button class="preset-btn" onclick="addTargetDirect(320, 400)">👤 P1</button>
+                <button class="preset-btn" onclick="addTargetDirect(480, 400)">👤 P2</button>
+                <button class="preset-btn" onclick="addTargetDirect(160, 600)">👤 P3</button>
+                <button class="preset-btn" onclick="addTargetDirect(480, 600)">👤 P4</button>
+                <button class="preset-btn" onclick="addTargetDirect(320, 500)">⭕ Center</button>
+            </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="card">
+            <div class="section-title">🎮 التحكم</div>
+            <div class="button-group">
+                <button class="btn btn-primary btn-full" onclick="startClicking()">▶️ بدء</button>
+                <button class="btn btn-danger btn-full" onclick="stopClicking()">⏹️ إيقاف</button>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="card">
+            <div class="info-box">
+                ℹ️ <strong>ملاحظات مهمة:</strong><br>
+                • تأكد من أن اللعبة مفتوحة<br>
+                • استخدم مواضع صحيحة<br>
+                • اختبر قبل الاستخدام الطويل<br>
+                • يعمل بدون جلبريك ✓
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let state = {
+            isRunning: false,
+            clickCount: 0,
+            targets: [],
+            speed: 0.1,
+            clickInterval: null
+        };
+
+        // Speed Slider
+        document.getElementById('speedSlider').addEventListener('input', (e) => {
+            state.speed = parseFloat(e.target.value);
+            document.getElementById('speedValue').textContent = state.speed.toFixed(2) + 's';
+        });
+
+        // Add Target
+        function addTarget() {
+            const x = parseFloat(document.getElementById('xInput').value);
+            const y = parseFloat(document.getElementById('yInput').value);
+            
+            if (isNaN(x) || isNaN(y)) {
+                alert('أدخل قيم صحيحة');
+                return;
+            }
+            
+            addTargetDirect(x, y);
+            document.getElementById('xInput').value = '';
+            document.getElementById('yInput').value = '';
+        }
+
+        function addTargetDirect(x, y) {
+            state.targets.push({ x, y });
+            updateTargetList();
+            showNotification(`تم إضافة هدف: (${x}, ${y})`);
+        }
+
+        function removeTarget(index) {
+            state.targets.splice(index, 1);
+            updateTargetList();
+        }
+
+        function clearAllTargets() {
+            if (confirm('هل تريد مسح جميع الأهداف؟')) {
+                state.targets = [];
+                updateTargetList();
+                showNotification('تم مسح جميع الأهداف');
+            }
+        }
+
+        function updateTargetList() {
+            const list = document.getElementById('targetList');
+            
+            if (state.targets.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #666; padding: 20px; font-size: 12px;">لا توجد أهداف حتى الآن</div>';
+                return;
+            }
+            
+            list.innerHTML = state.targets.map((target, index) => `
+                <div class="target-item">
+                    <span class="target-coords">(${target.x}, ${target.y})</span>
+                    <button class="target-remove" onclick="removeTarget(${index})">حذف</button>
+                </div>
+            `).join('');
+        }
+
+        // Start Clicking
+        function startClicking() {
+            if (state.isRunning) {
+                alert('النقرات قيد التشغيل بالفعل');
+                return;
+            }
+            
+            if (state.targets.length === 0) {
+                alert('أضف أهدافاً أولاً');
+                return;
+            }
+            
+            state.isRunning = true;
+            state.clickCount = 0;
+            updateStatus();
+            
+            let targetIndex = 0;
+            state.clickInterval = setInterval(() => {
+                const target = state.targets[targetIndex];
+                simulateClick(target.x, target.y);
+                state.clickCount++;
+                document.getElementById('clickCount').textContent = state.clickCount;
+                
+                targetIndex = (targetIndex + 1) % state.targets.length;
+            }, state.speed * 1000);
+            
+            showNotification('تم بدء النقرات ✓');
+        }
+
+        // Stop Clicking
+        function stopClicking() {
+            if (!state.isRunning) {
+                alert('النقرات متوقفة بالفعل');
+                return;
+            }
+            
+            state.isRunning = false;
+            clearInterval(state.clickInterval);
+            updateStatus();
+            
+            showNotification(`تم الإيقاف - إجمالي النقرات: ${state.clickCount}`);
+        }
+
+        // Simulate Click
+        function simulateClick(x, y) {
+            // Create and dispatch touch events
+            const touch = new Touch({
+                identifier: Date.now(),
+                target: document.elementFromPoint(x, y) || document.body,
+                clientX: x,
+                clientY: y,
+                screenX: x,
+                screenY: y,
+                pageX: x,
+                pageY: y
+            });
+
+            const touchStartEvent = new TouchEvent('touchstart', {
+                bubbles: true,
+                cancelable: true,
+                touches: [touch],
+                targetTouches: [touch],
+                changedTouches: [touch]
+            });
+
+            const touchEndEvent = new TouchEvent('touchend', {
+                bubbles: true,
+                cancelable: true,
+                touches: [],
+                targetTouches: [],
+                changedTouches: [touch]
+            });
+
+            const element = document.elementFromPoint(x, y);
+            if (element) {
+                element.dispatchEvent(touchStartEvent);
+                setTimeout(() => {
+                    element.dispatchEvent(touchEndEvent);
+                }, 50);
+            }
+
+            console.log(`Clicked at (${x}, ${y})`);
+        }
+
+        // Update Status
+        function updateStatus() {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            if (state.isRunning) {
+                indicator.classList.add('active');
+                text.textContent = 'قيد التشغيل ▶️';
+                text.style.color = '#00ff00';
+            } else {
+                indicator.classList.remove('active');
+                text.textContent = 'متوقف ⏹️';
+                text.style.color = '#ff4444';
+            }
+        }
+
+        // Load Presets
+        function loadPresets() {
+            clearAllTargets();
+            addTargetDirect(160, 400);  // Dice
+            addTargetDirect(320, 400);  // Player 1
+            addTargetDirect(480, 400);  // Player 2
+            showNotification('تم تحميل إعدادات Yalla Ludo');
+        }
+
+        // Notification
+        function showNotification(message) {
+            console.log('📢', message);
+            // يمكن إضافة toast notification هنا
+        }
+
+        // Prevent accidental scrolling
+        document.addEventListener('touchmove', (e) => {
+            if (e.target.closest('.target-list')) return;
+            e.preventDefault();
+        }, { passive: false });
+
+        // Initialize
+        updateStatus();
+        updateTargetList();
+    </script>
+</body>
+</html>
