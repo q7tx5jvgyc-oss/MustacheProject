@@ -3,21 +3,33 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      THEOS: <LaTex>${{ github.workspace }}/theos
+
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Install Theos
-        run: bash -c "<LaTex>$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
-      - name: Build
         run: |
-          export THEOS=~/theos
-          mkdir -p $</LaTex>THEOS/sdks
-          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C $THEOS/sdks
+          git clone --recursive https://github.com/theos/theos.git $</LaTex>THEOS
+          
+      - name: Setup iOS SDK
+        run: |
+          mkdir -p <LaTex>$THEOS/sdks
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C $</LaTex>THEOS/sdks
+
+      - name: Build Tweak
+        run: |
           make clean package FINALPACKAGE=1
-      - name: Upload
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: UltraAutoClicker-Build
