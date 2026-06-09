@@ -1,32 +1,19 @@
-name: Build Ultra Tweak
-on:
-  push:
-    branches: [ main, master ]
-  workflow_dispatch:
-
+name: Build Tweak
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: macos-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Theos
+      - uses: actions/checkout@v4
+      - name: Setup Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git ~/theos
-          
-      - name: Setup iOS SDK
-        run: |
-          mkdir -p ~/theos/sdks
           curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C ~/theos/sdks
-
-      - name: Build Tweak
+      - name: Build
         run: |
           export THEOS=~/theos
-          make clean package FINALPACKAGE=1
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+          make package FINALPACKAGE=1
+      - uses: actions/upload-artifact@v4
         with:
-          name: UltraAutoClicker-Build
+          name: Tweak-Build
           path: packages/*.deb
